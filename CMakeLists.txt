@@ -43,3 +43,22 @@ set_target_properties(SDL3 PROPERTIES
 )
 endif()
 target_link_libraries(Learn_OpenGL PRIVATE SDL3)
+
+# GLFW SETUP
+
+add_library(GLFW SHARED IMPORTED)
+
+if(WIN32)
+set_target_properties(GLFW PROPERTIES
+    IMPORTED_IMPLIB
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/GLFW/lib/glfw3.lib"
+
+    IMPORTED_LOCATION
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/GLFW/lib/glfw3.dll"
+
+    INTERFACE_INCLUDE_DIRECTORIES
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/GLFW/include"
+)
+endif()
+
+target_link_libraries(Learn_OpenGL PRIVATE GLFW)
