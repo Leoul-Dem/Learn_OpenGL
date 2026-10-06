@@ -10,8 +10,10 @@ add_executable(Learn_OpenGL
 )
 
 # GLEW SETUP
+
 add_library(GLEW SHARED IMPORTED)
 
+if(WIN32)
 set_target_properties(GLEW PROPERTIES
     IMPORTED_IMPLIB
         "${CMAKE_CURRENT_LIST_DIR}/libraries/GLEW/lib/Release/x64/glew32.lib"
@@ -22,13 +24,16 @@ set_target_properties(GLEW PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES
         "${CMAKE_CURRENT_LIST_DIR}/libraries/GLEW/include"
 )
+endif()
 
 target_link_libraries(Learn_OpenGL PRIVATE GLEW)
+
 
 # SDL3 SETUP
 
 add_library(SDL3 STATIC IMPORTED)
 
+if(WIN32)
 set_target_properties(SDL3 PROPERTIES
     IMPORTED_LOCATION
         "${CMAKE_CURRENT_LIST_DIR}/libraries/SDL3/lib/x64/SDL3.lib"
@@ -36,5 +41,5 @@ set_target_properties(SDL3 PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES
         "${CMAKE_CURRENT_LIST_DIR}/libraries/SDL3/include"
 )
-
+endif()
 target_link_libraries(Learn_OpenGL PRIVATE SDL3)
