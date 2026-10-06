@@ -1,14 +1,40 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 
 project(Learn_OpenGL LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(Learn_OpenGL main.cpp)
-
-include(GNUInstallDirs)
-install(TARGETS Learn_OpenGL
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+add_executable(Learn_OpenGL
+    main.cpp
 )
+
+# GLEW SETUP
+add_library(GLEW SHARED IMPORTED)
+
+set_target_properties(GLEW PROPERTIES
+    IMPORTED_IMPLIB
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/GLEW/lib/Release/x64/glew32.lib"
+
+    IMPORTED_LOCATION
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/GLEW/bin/Release/x64/glew32.dll"
+
+    INTERFACE_INCLUDE_DIRECTORIES
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/GLEW/include"
+)
+
+target_link_libraries(Learn_OpenGL PRIVATE GLEW)
+
+# SDL3 SETUP
+
+add_library(SDL3 STATIC IMPORTED)
+
+set_target_properties(SDL3 PROPERTIES
+    IMPORTED_LOCATION
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/SDL3/lib/x64/SDL3.lib"
+
+    INTERFACE_INCLUDE_DIRECTORIES
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/SDL3/include"
+)
+
+target_link_libraries(Learn_OpenGL PRIVATE SDL3)
