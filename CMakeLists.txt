@@ -26,9 +26,6 @@ set_target_properties(GLEW PROPERTIES
 )
 endif()
 
-target_link_libraries(Learn_OpenGL PRIVATE GLEW)
-
-
 # SDL3 SETUP
 
 add_library(SDL3 STATIC IMPORTED)
@@ -42,7 +39,6 @@ set_target_properties(SDL3 PROPERTIES
         "${CMAKE_CURRENT_LIST_DIR}/libraries/SDL3/include"
 )
 endif()
-target_link_libraries(Learn_OpenGL PRIVATE SDL3)
 
 # GLFW SETUP
 
@@ -61,4 +57,17 @@ set_target_properties(GLFW PROPERTIES
 )
 endif()
 
-target_link_libraries(Learn_OpenGL PRIVATE GLFW)
+find_package(OpenGL REQUIRED)
+
+target_link_libraries(Learn_OpenGL PRIVATE GLFW SDL3 GLEW OpenGL::GL)
+
+# Copy required DLLs next to Learn_OpenGL.exe
+add_custom_command(TARGET Learn_OpenGL POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/GLEW/bin/Release/x64/glew32.dll"
+        "$<TARGET_FILE_DIR:Learn_OpenGL>"
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_CURRENT_LIST_DIR}/libraries/GLFW/lib/glfw3.dll"
+        "$<TARGET_FILE_DIR:Learn_OpenGL>"
+)
