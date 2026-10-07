@@ -1,7 +1,9 @@
 #include <iostream>
 //#include <SDL3/SDL.h>
-#include <GL/glew.h>
+// #include <GL/glew.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
+
 
 const GLint WIDTH = 800, HEIGHT = 600;
 
@@ -33,10 +35,18 @@ int main()
     int bufferWidth, bufferHeight;
     glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
 
-    glewExperimental = GL_TRUE;
+    // glewExperimental = GL_TRUE;
 
-    if (glewInit() != GLEW_OK) {
-        std::cout << "GLEW init failed\n";
+    // if (glewInit() != GLEW_OK) {
+    //     std::cout << "GLEW init failed\n";
+    //     glfwDestroyWindow(mainWindow);
+    //     glfwTerminate();
+    //     return -1;
+    // }
+
+    int version = gladLoadGL(glfwGetProcAddress);
+    if (version == 0) {
+        std::cout << "GLAD init failed\n";
         glfwDestroyWindow(mainWindow);
         glfwTerminate();
         return -1;
