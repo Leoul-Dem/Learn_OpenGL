@@ -10,6 +10,9 @@ add_executable(Learn_OpenGL
 )
 
 if(WIN32)
+    # GLM
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/libraries/Windows/GLM" SYSTEM)
+
     # GLEW
     add_library(GLEW SHARED IMPORTED)
     set_target_properties(GLEW PROPERTIES
@@ -48,7 +51,7 @@ if(WIN32)
 
     find_package(OpenGL REQUIRED)
 
-    target_link_libraries(Learn_OpenGL PRIVATE GLFW SDL3 GLEW OpenGL::GL)
+    target_link_libraries(Learn_OpenGL PRIVATE GLFW SDL3 GLEW OpenGL::GL glm::glm)
 
     # Copy required DLLs next to Learn_OpenGL.exe
     add_custom_command(TARGET Learn_OpenGL POST_BUILD
@@ -61,6 +64,9 @@ if(WIN32)
             "$<TARGET_FILE_DIR:Learn_OpenGL>"
     )
 elseif(UNIX AND NOT APPLE)
+    # GLM
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/libraries/Windows/GLM" SYSTEM)
+
     find_package(OpenGL REQUIRED)
     find_package(GLEW REQUIRED)
     find_package(glfw3 REQUIRED)
@@ -71,6 +77,7 @@ elseif(UNIX AND NOT APPLE)
         GLEW::GLEW
         glfw
         SDL3::SDL3
+        glm::glm
     )
 endif()
 

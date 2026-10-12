@@ -6,20 +6,39 @@
 #include <string>
 #include <vector>
 #include <array>
-
+#include <stdlib.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <numbers>
 // Window dimension
 const GLint WIDTH = 800, HEIGHT = 600;
+const float toRadians = static_cast<float>(std::numbers::pi) / 180.f;
 
-GLuint VAO, VBO, shader;
+GLuint VAO, VBO, shader, uniformModel;
+
+bool direction = true;
+float triOffset = 0.f;
+float triMaxOffset = 0.7f;
+float triInvcrement = 0.005f;
+
+float currAngle = 0.f;
+
+bool sizeDirection = true;
+float currSize = 0.4f;
+float minSize = 0.1f;
+float maxSize = 0.8f;
 
 // Vertex Shader
 std::string vShader("                                           \n\
 #version 330                                                    \n\
                                                                 \n\
+uniform mat4 model ;                                            \n\
+                                                                \n\
 layout (location = 0) in vec3 pos;                              \n\
                                                                 \n\
 void main(){                                                    \n\
-    gl_Position = vec4(0.4 * pos.x, 0.4 * pos.y, pos.z, 1.0);   \n\
+    gl_Position = model * vec4(pos, 1.0);       \n\
 }");
 
 static const std::string fShader("                              \n\
@@ -108,6 +127,8 @@ void CompileShaders() {
         std::cout << "Error validating program: " << err.data() << "\n";
         return;
     }
+
+    uniformModel = glGetUniformLocation(shader, "model");
 }
 
 int main() {
@@ -173,10 +194,46 @@ int main() {
     while (!glfwWindowShouldClose(mainWindow)) {
         glfwPollEvents();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        if (direction) {
+            triOffset += triInvcrement;
+        }
+        else {
+            triOffset -= triInvcrement;
+        }
+
+        if (abs(triOffset) >= triMaxOffset) {
+            direction = !direction;
+        }
+
+        currAngle += 0.1f;
+        if (currAngle >= 360.f) {
+            currAngle = 0.f;
+        }
+
+        if (sizeDirection) {
+            currSize += 0.001f;
+        }
+        else {
+            currSize -= 0.001f;
+        }
+
+        if (currSize >= maxSize || currSize <= minSize) {
+            sizeDirection = !sizeDirection;
+        }
+
+        glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shader);
+        
+        glm::mat4 model(1.f);
+        model = glm::translate(model, glm::vec3(triOffset, 0.f, 0.f));
+        //model = glm::rotate(model, currAngle * toRadians, glm::vec3(0.f, 0.f, 1.f));
+        model = glm::scale(model, glm::vec3(currSize, currSize, 1.f));
+        
+
+        //glUniform1f(uniformXMove, triOffset);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
         glBindVertexArray(VAO);
 
