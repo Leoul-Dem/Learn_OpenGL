@@ -111,6 +111,11 @@ void CompileShaders() {
 }
 
 int main() {
+
+#ifdef __linux__
+    glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+#endif
+
     if (!glfwInit()) {
         std::cout << "GLFW init failed\n";
         return -1;
@@ -139,12 +144,18 @@ int main() {
 
     glewExperimental = GL_TRUE;
 
-    if (glewInit() != GLEW_OK) {
-        std::cout << "GLEW init failed\n";
-        glfwDestroyWindow(mainWindow);
-        glfwTerminate();
-        return -1;
-    }
+    // GLenum err =
+        glewInit();
+
+    // if (err != GLEW_OK) {
+    //     std::cout << "GLEW init failed\n";
+    //     std::cerr << "GLEW error code: " << err << '\n';
+    //     std::cerr << "GLEW error: "
+    //               << glewGetErrorString(err) << '\n';
+    //     glfwDestroyWindow(mainWindow);
+    //     glfwTerminate();
+    //     return -1;
+    // }
 
     /*int version = gladLoadGL(glfwGetProcAddress);
     if (version == 0) {
